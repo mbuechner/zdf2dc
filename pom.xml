@@ -175,9 +175,8 @@
                             <messages>
                                 <startupErr>Error while starting ${project.name}.</startupErr>
                                 <bundledJreErr>Bundle error startung ${project.name}.</bundledJreErr>
-                                <jreVersionErr>${project.name} does require Java 11 or higher. Either install it on your system or put it into the subfolder jre/. Thanks!</jreVersionErr>
+                                <jreVersionErr>${project.name} does require Java 8 or higher. Either install it on your system or put it into the subfolder jre/.</jreVersionErr>
                                 <launcherErr>Error running ${project.name}.</launcherErr>
-                                Used by console header only. 
                                 <instanceAlreadyExistsMsg>${project.name} is already running.</instanceAlreadyExistsMsg>
                             </messages>
                         </configuration>
