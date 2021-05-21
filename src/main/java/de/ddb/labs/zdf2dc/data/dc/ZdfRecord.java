@@ -15,7 +15,6 @@
  */
 package de.ddb.labs.zdf2dc.data.dc;
 
-import de.ddb.labs.zdf2dc.data.ZDF2DcList;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -95,16 +94,16 @@ public class ZdfRecord {
     public ZDF2DcList<DcElement> type = new ZDF2DcList<>();
     @Getter
     @JacksonXmlProperty(localName = "dc", namespace = "http://www.w3.org/2000/xmlns/", isAttribute = true)
-    private final static String xmlnsDc = "http://purl.org/dc/elements/1.1/";
+    private final static String XMLNSDC = "http://purl.org/dc/elements/1.1/";
     @Getter
     @JacksonXmlProperty(localName = "dcterms", namespace = "http://www.w3.org/2000/xmlns/", isAttribute = true)
-    private final static String xmlnsDcterms = "http://purl.org/dc/terms/";
+    private final static String XMLNSDCTERMS = "http://purl.org/dc/terms/";
     @Getter
     @JacksonXmlProperty(localName = "doc", namespace = "http://www.w3.org/2000/xmlns/", isAttribute = true)
-    private final static String xmlnsDoc = "http://www.lyncode.com/xoai";
+    private final static String XMLNSDOC = "http://www.lyncode.com/xoai";
     @Getter
     @JacksonXmlProperty(localName = "europeana", namespace = "http://www.w3.org/2000/xmlns/", isAttribute = true)
-    private final static String xmlnsEuropeana = "http://www.europeana.eu/schemas/ese/";
+    private final static String XMLNSEUROPEANA = "http://www.europeana.eu/schemas/ese/";
 
     public ZdfRecord() {
         getIdentifier().add(new DcElement("oid1616747773566", "providerId", null));

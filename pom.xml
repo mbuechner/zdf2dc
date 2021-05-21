@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ddb.labs</groupId>
     <artifactId>zdf2dc</artifactId>
-    <version>1.0-beta1</version>
+    <version>1.0-beta2</version>
     <packaging>jar</packaging>
     <name>ZDF2DC</name>
     <licenses>

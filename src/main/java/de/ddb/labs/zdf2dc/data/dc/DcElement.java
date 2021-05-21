@@ -21,6 +21,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 @EqualsAndHashCode(doNotUseGetters=true)
 public class DcElement {
 

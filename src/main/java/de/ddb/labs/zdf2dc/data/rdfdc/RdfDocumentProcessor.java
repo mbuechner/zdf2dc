@@ -22,7 +22,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import de.ddb.labs.zdf2dc.data.NamespaceFactory;
+import de.ddb.labs.zdf2dc.helper.NamespaceFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +47,10 @@ import okio.Okio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 public class RdfDocumentProcessor {
 
     private final static String ID = "SCMS_1aa2b672-b635-4df8-96e6-0ff488a634b0";
@@ -75,6 +79,7 @@ public class RdfDocumentProcessor {
         otherNamespaces.put("foaf", "http://xmlns.com/foaf/0.1/");
         otherNamespaces.put("dc", "http://purl.org/dc/elements/1.1/");
         otherNamespaces.put("edm", "http://www.europeana.eu/schemas/edm/");
+        otherNamespaces.put("oai", "http://www.openarchives.org/OAI/2.0/");
 
         final NamespaceFactory nsf = new NamespaceFactory("none", otherNamespaces);
         xmlMapper = new XmlMapper(nsf);
@@ -108,7 +113,7 @@ public class RdfDocumentProcessor {
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-
+       
         final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(CONNECTTIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITETIMEOUT, TimeUnit.SECONDS)
@@ -173,7 +178,7 @@ public class RdfDocumentProcessor {
         }
     }
 
-    public static void save(ZdfRdfRecordList list, File dst) throws FileNotFoundException, IOException {
+    public static void save(OaiPmhReponse list, File dst) throws FileNotFoundException, IOException {
         try (final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dst), Charset.forName("UTF-8")))) {
             writer.append(cleanupKnownIssue(xmlMapper.writeValueAsString(list)));
             writer.close();

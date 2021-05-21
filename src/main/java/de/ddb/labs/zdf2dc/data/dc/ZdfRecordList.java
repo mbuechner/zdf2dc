@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 @JacksonXmlRootElement(localName = "ListRecords", namespace = "http://www.openarchives.org/OAI/2.0/")
 public class ZdfRecordList {
     

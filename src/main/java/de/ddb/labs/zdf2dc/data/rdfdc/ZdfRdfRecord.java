@@ -20,17 +20,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import de.ddb.labs.zdf2dc.data.ZDF2DcList;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
+@EqualsAndHashCode(doNotUseGetters=true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JacksonXmlRootElement(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#", localName = "RDF")
 public class ZdfRdfRecord {
@@ -57,13 +60,13 @@ public class ZdfRdfRecord {
         @Setter
         @JacksonXmlProperty(localName = "alternative", namespace = "http://purl.org/dc/terms/")
         @JacksonXmlElementWrapper(useWrapping = false)
-        private ZDF2DcList<ElementWithAttributes> alternative = new ZDF2DcList<>();
+        private ZdfElementList<ElementWithAttributes> alternative = new ZdfElementList<>();
 
         @Getter
         @Setter
         @JacksonXmlProperty(localName = "description", namespace = "http://purl.org/dc/elements/1.1/")
         @JacksonXmlElementWrapper(useWrapping = false)
-        private List<ElementWithAttributes> description = new ArrayList<>();
+        private ZdfElementList<ElementWithAttributes> description = new ZdfElementList<>();
 
         @Setter
         @JacksonXmlProperty(localName = "extent", namespace = "http://purl.org/dc/terms/")
@@ -112,7 +115,7 @@ public class ZdfRdfRecord {
         @Setter
         @JacksonXmlProperty(localName = "title", namespace = "http://purl.org/dc/elements/1.1/")
         @JacksonXmlElementWrapper(useWrapping = false)
-        private List<ElementWithAttributes> title = new ArrayList<>();
+        private ZdfElementList<ElementWithAttributes> title = new ZdfElementList<>();
 
         @Getter
         @Setter
@@ -189,7 +192,7 @@ public class ZdfRdfRecord {
                 @Setter
                 @JacksonXmlProperty(localName = "value", namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
                 @JacksonXmlElementWrapper(useWrapping = false)
-                private List<String> value = new ArrayList<>();
+                private ZdfElementList<String> value = new ZdfElementList<>();
             }
         }
     }

@@ -18,24 +18,25 @@ package de.ddb.labs.zdf2dc.gui;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.ddb.labs.zdf2dc.data.rdfdc.OaiPmhReponse;
 import de.ddb.labs.zdf2dc.data.rdfdc.RdfDocumentProcessor;
 import de.ddb.labs.zdf2dc.data.rdfdc.ZdfRdfRecord;
-import de.ddb.labs.zdf2dc.data.rdfdc.ZdfRdfRecordList;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import lombok.Getter;
+import lombok.Setter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Dispatcher;
@@ -48,15 +49,19 @@ import okio.Okio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Gui extends javax.swing.JFrame {
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
+public class Gui extends JFrame {
 
+    private final static Logger LOG = LoggerFactory.getLogger(Gui.class);
     private final static int CONNECTTIMEOUT = 10;
     private final static int WRITETIMEOUT = 10;
     private final static int READTIMEOUT = 30;
     private final OkHttpClient client;
     private final JsonFactory factory;
     private final ObjectMapper mapper;
-    private final static Logger LOG = LoggerFactory.getLogger(Gui.class);
     private final DataDownloader downloader;
     private final Preferences userPrefs;
 
@@ -491,6 +496,7 @@ public class Gui extends javax.swing.JFrame {
         }
         LOG.info("Save files to {}", file.getAbsolutePath());
         downloader.reset();
+        downloader.setAddingDownloads(true);
         jButton3.setEnabled(false);
 
         final boolean allToOneFile = jCheckBox2.isSelected();
@@ -509,6 +515,8 @@ public class Gui extends javax.swing.JFrame {
                 LOG.info("Save DC file {} to directory {}", id, f.getAbsolutePath());
             }
         }
+
+        downloader.setAddingDownloads(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -521,7 +529,7 @@ public class Gui extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Download konnte nicht abgeschlossen werden!\n" + ex.getMessage(), "Fehler", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         final String url = urlTmp;
 
         final Request request = new Request.Builder()
@@ -726,7 +734,10 @@ public class Gui extends javax.swing.JFrame {
         private final OkHttpClient client;
         private AtomicInteger totalCount, count;
         private final TreeSet<String> errorDownloads;
-        private final ZdfRdfRecordList list;
+        private final OaiPmhReponse list;
+        @Getter
+        @Setter
+        private boolean addingDownloads;
 
         public DataDownloader() throws InterruptedException, IOException {
             final Dispatcher dispatcher = new Dispatcher();
@@ -743,7 +754,8 @@ public class Gui extends javax.swing.JFrame {
             this.totalCount = new AtomicInteger(0);
             this.count = new AtomicInteger(0);
             this.errorDownloads = new TreeSet<>();
-            this.list = new ZdfRdfRecordList();
+            this.list = new OaiPmhReponse();
+            this.addingDownloads = false;
         }
 
         public synchronized void reset() {
@@ -789,7 +801,7 @@ public class Gui extends javax.swing.JFrame {
                         sink.close();
 
                         final ZdfRdfRecord record = RdfDocumentProcessor.process(saveToJsonFile);
-                        list.getList().add(record);
+                        list.getListRecords().addRecord(record);
 
                         if (!saveToJsonFile.delete()) {
                             LOG.warn("Konnte temporäre Datei {} nicht löschen.", saveToJsonFile.getAbsolutePath());
@@ -804,7 +816,8 @@ public class Gui extends javax.swing.JFrame {
 
                 private synchronized void done(File saveAllToOneFile) {
                     jLabel4.setText(count.get() + "/" + totalCount.get() + " (" + errorDownloads.size() + " Fehler)");
-                    if (count.get() == totalCount.get() && client.dispatcher().queuedCallsCount() == 0) {
+                    LOG.debug("addingDownloads: {}; count: {}; totalCount: {}; queuedCallsCount: {}; runningCallsCount: {}", addingDownloads, count, totalCount, client.dispatcher().queuedCallsCount(), client.dispatcher().runningCallsCount());
+                    if (!addingDownloads && count.get() == totalCount.get() && client.dispatcher().queuedCallsCount() == 0 && client.dispatcher().runningCallsCount() < 2) {
 
                         if (saveAllToOneFile == null) {
                             LOG.error("saveAllToOneFile is null");
@@ -862,12 +875,13 @@ public class Gui extends javax.swing.JFrame {
                     }
                     final File saveToJsonFile = new File(jsonFileName);
 
-                    try (final BufferedSink sink = Okio.buffer(Okio.sink(saveToJsonFile))) {
+                    try {
+                        final BufferedSink sink = Okio.buffer(Okio.sink(saveToJsonFile));
                         sink.writeAll(response.body().source());
                         sink.close();
 
                         final ZdfRdfRecord record = RdfDocumentProcessor.process(saveToJsonFile);
-                        list.getList().add(record);
+                        list.getListRecords().addRecord(record);
                         RdfDocumentProcessor.save(record, saveToFile);
 
                         if (!keepOriginal) {
@@ -886,7 +900,8 @@ public class Gui extends javax.swing.JFrame {
 
                 private synchronized void done() {
                     jLabel4.setText(count.get() + "/" + totalCount.get() + " (" + errorDownloads.size() + " Fehler)");
-                    if (count.get() == totalCount.get() && client.dispatcher().queuedCallsCount() == 0) {
+                    LOG.debug("addingDownloads: {}; count: {}; totalCount: {}; queuedCallsCount: {}; runningCallsCount: {}", addingDownloads, count, totalCount, client.dispatcher().queuedCallsCount(), client.dispatcher().runningCallsCount());
+                    if (!addingDownloads && count.get() == totalCount.get() && client.dispatcher().queuedCallsCount() == 0 && client.dispatcher().runningCallsCount() < 2) {
 
                         jButton3.setEnabled(true);
 

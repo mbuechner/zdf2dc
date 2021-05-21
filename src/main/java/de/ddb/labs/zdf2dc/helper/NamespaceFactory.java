@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ddb.labs.zdf2dc.data;
+package de.ddb.labs.zdf2dc.helper;
 
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
@@ -25,6 +25,10 @@ import java.util.Objects;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 public class NamespaceFactory extends XmlFactory {
 
     private final String defaultNamespace;

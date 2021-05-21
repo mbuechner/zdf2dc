@@ -30,8 +30,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -40,9 +38,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 public class Reformatter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Reformatter.class);
+    // private static final Logger LOG = LoggerFactory.getLogger(Reformatter.class);
     private final DocumentBuilderFactory docFactory;
     private final DocumentBuilder docBuilder;
     private static final String XSL = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -69,7 +71,7 @@ public class Reformatter {
             + "    </xsl:template>\n"
             + "</xsl:stylesheet>";
 
-    private Transformer transformer;
+    private final Transformer transformer;
 
     public Reformatter() throws TransformerConfigurationException, ParserConfigurationException {
         DocumentBuilderFactory.newInstance().setNamespaceAware(true);
@@ -87,11 +89,11 @@ public class Reformatter {
      * <li>Entfernen von allen unnötigen Namespace-Deklarationen.</li>
      * <li>XML-Einrücken, Formatieren und Aufhübschen.</li>
      * </ol>
-     *
      * @param xml
-     * @return 
-     * @throws TransformerConfigurationException
+     * @return
      * @throws TransformerException
+     * @throws SAXException
+     * @throws IOException 
      */
     public String reformat(String xml) throws TransformerException, SAXException, IOException {
         transformer.reset();

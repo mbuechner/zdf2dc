@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.ddb.labs.zdf2dc.data;
+package de.ddb.labs.zdf2dc.data.dc;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ * @param <DcElement> 
+ */
 public class ZDF2DcList<DcElement> extends ArrayList<DcElement> {
 
     @Override

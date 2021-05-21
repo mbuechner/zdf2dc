@@ -15,26 +15,24 @@
  */
 package de.ddb.labs.zdf2dc.data.rdfdc;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.ArrayList;
-import java.util.List;
-import lombok.Getter;
+import java.util.ListIterator;
 
 /**
  * 
  * @author Michael Büchner <m.buechner@dnb.de>
+ * @param <ElementWithAttributes> 
  */
-@JacksonXmlRootElement(localName = "ListRecords", namespace = "http://www.openarchives.org/OAI/2.0/")
-public class ZdfRdfRecordList {
-    
-    @Getter
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "record", namespace = "http://www.openarchives.org/OAI/2.0/")
-    private final List<ZdfRdfRecord> list = new ArrayList<>();
-    
-    public void clear() {
-        list.clear();
-    } 
+public class ZdfElementList<ElementWithAttributes> extends ArrayList<ElementWithAttributes> {
+
+    @Override
+    public boolean add(ElementWithAttributes e) {
+        ListIterator<ElementWithAttributes> litr = super.listIterator();
+        while (litr.hasNext()) {
+            if (e.equals(litr.next())) {
+                return false;
+            }
+        }
+        return super.add(e);
+    }
 }

@@ -16,27 +16,39 @@
 package de.ddb.labs.zdf2dc;
 
 import de.ddb.labs.zdf2dc.gui.Gui;
+import java.awt.EventQueue;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 public class Main {
 
     private final static Logger LOG = LoggerFactory.getLogger(Main.class);
 
+    /**
+     * 
+     * @param args 
+     */
     public static void main(String args[]) {
 
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             LOG.error("{}", ex.getMessage(), ex);
         }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     final Gui gui = new Gui();
@@ -46,7 +58,6 @@ public class Main {
                     LOG.error("{}", e.getMessage(), e);
                 }
             }
-            
         });
     }
 }

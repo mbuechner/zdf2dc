@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import de.ddb.labs.zdf2dc.data.NamespaceFactory;
+import de.ddb.labs.zdf2dc.helper.NamespaceFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,6 +30,10 @@ import okio.Okio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Michael Büchner <m.buechner@dnb.de>
+ */
 public class DocumentProcessor {
 
     private final static String ID = "SCMS_1aa2b672-b635-4df8-96e6-0ff488a634b0";
@@ -114,11 +118,9 @@ public class DocumentProcessor {
                 }
 
                 final File saveToJsonFile = File.createTempFile("zdf2dc-", ".json");
-                try {
-                    final BufferedSink sink = Okio.buffer(Okio.sink(saveToJsonFile));
+                try (final BufferedSink sink = Okio.buffer(Okio.sink(saveToJsonFile))) {
                     sink.writeAll(response.body().source());
-                    sink.close();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     LOG.error("\"{}\" konnte nicht heruntergeladen werden. {}", ID, e.getMessage());
                 }
 
