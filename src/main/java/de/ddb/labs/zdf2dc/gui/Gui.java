@@ -258,14 +258,14 @@ public class Gui extends JFrame {
             }
         });
 
-        jButton4.setText("->");
+        jButton4.setText("▶");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
-        jButton5.setText("<-");
+        jButton5.setText("◀");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
