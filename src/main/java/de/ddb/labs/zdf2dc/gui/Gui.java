@@ -521,9 +521,12 @@ public class Gui extends JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+        if(jTextField1.getText().trim().isEmpty()) {
+            return;
+        }
         String urlTmp = "";
         try {
-            urlTmp = URLEncoder.encode(jTextField1.getText(), "UTF-8");
+            urlTmp = URLEncoder.encode(jTextField1.getText().trim(), "UTF-8");
         } catch (UnsupportedEncodingException ex) {
             LOG.error("{}", ex.getMessage(), ex);
             JOptionPane.showMessageDialog(null, "Download konnte nicht abgeschlossen werden!\n" + ex.getMessage(), "Fehler", JOptionPane.WARNING_MESSAGE);
